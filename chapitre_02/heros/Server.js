@@ -37,20 +37,22 @@ function midError(_req, _res, next) {
 // Functions
 function transformName(req, _res, next) {
     const heroName = req.body.name;
-
     heroName.toLocaleLowerCase();
     next();
 };
 
 function checkName(req, res, next) {
-    const heroesNames = superHeros.map(item => item.name);
-    //    const index = heroesNames.indexOf(req.body.name)
+    const newHero = req.body;
+    const heroesNames = superHeros.map(item => item.name).find(name => name === newHero.name);
 
-    if (heroesNames.includes(req.body)) {
-        console.log('Hero déjà dans la liste');
+    if (newHero.name === heroesNames) {
+        console.log('Le héro existe');
+        next();
+    } else {
+        res.json({
+            message: 'Le héro n existe pas, vous pouvez donc pas le supprimer',
+        });
     };
-
-    next();
 };
 
 // Middlewares
@@ -87,15 +89,31 @@ app.route('/heroes')
         };
     });
 
-app.get('/heroes/:name', (req, res) => {
-    const heroName = req.params.name;
-    const find = superHeros.find(element => element.name.toLocaleLowerCase() === heroName);
+app.route('/heroes/:name')
+    .get((req, res) => {
+        const heroName = req.params.name;
+        const find = superHeros.find(element => element.name.toLocaleLowerCase() === heroName);
 
-    res.json({
-        message: `Vous avez demandé : ${heroName}`,
-        data: find,
+        res.json({
+            message: `Vous avez demandé : ${heroName}`,
+            data: find,
+        });
+    })
+    .delete(checkName, (req, res) => {
+        const newHero = req.body;
+        const heroToDelete = superHeros.find(hero => hero.name === newHero.name);
+        const index = heroesNames.indexOf(newHero.name);
+
+        console.log(heroesNames);
+
+        console.log(index)
+        console.log(newHero.name)
+
+        res.json({
+            message: `${newHero.name} effacé correctement, index : ${index}`,
+            data: superHeros.slice(index, index + 1),
+        });
     });
-});
 
 app.route('/heroes/:name/powers')
     .get((req, res) => {
