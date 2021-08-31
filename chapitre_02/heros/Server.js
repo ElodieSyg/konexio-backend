@@ -4,7 +4,7 @@ const PORT = 3000;
 
 let superHeros = [
     {
-        name: "Iron Man",
+        name: "IronMan",
         power: ["money"],
         color: "red",
         isAlive: true,
@@ -32,45 +32,95 @@ let superHeros = [
 function midError(_req, _res, next) {
     console.log('Je fais un console.log à chaque requête', new Date().toDateString());
     next();
-};;
+};
 
+// Functions
+function transformName(req, _res, next) {
+    const heroName = req.body.name;
+
+    heroName.toLocaleLowerCase();
+    next();
+};
+
+function checkName(req, res, next) {
+    const heroesNames = superHeros.map(item => item.name);
+    //    const index = heroesNames.indexOf(req.body.name)
+
+    if (heroesNames.includes(req.body)) {
+        console.log('Hero déjà dans la liste');
+    };
+
+    next();
+};
+
+// Middlewares
+app.use(express.json());
 app.use(midError);
 
-
-app.get('/', (req, res) => {
+// Routing
+app.get('/', (_req, res) => {
     res.json({
         message: 'Heros API',
     });
 });
 
-app.post('/heros', (req, res) => {
-    const value = req.params.value;
-    superHeros.push(value);
-    console.log(value);
-
-    res.json({
-        message: 'Body added',
-    });
-});
-
-app.get('/heros', (req, res) => {
-    const herosName = superHeros.map(name => name.name);
-
-    res.json({
-        data: herosName,
-    });
-});
-
-app.getMaxListeners('/heros/:name', (req, res) => {
-    const name = req.params;
-
-    res.json({
-        message: superHeros[name],
+app.route('/heroes')
+    .get((_req, res) => {
+        res.json({
+            message: 'Heros list',
+            data: superHeros,
+        });
     })
-})
+    .post(transformName, (req, res) => {
+        const newHero = req.body;
+        const heroesNames = superHeros.map(item => item.name).find(name => name === newHero.name);
 
-// reste du code 
+        if (newHero.name === heroesNames) {
+            res.json({
+                message: 'Le héro est déjà dans la liste',
+            });
+        } else {
+            superHeros.push(newHero);
+            res.json({
+                message: 'Le héro à bien été ajouté',
+            });
+        };
+    });
 
+app.get('/heroes/:name', (req, res) => {
+    const heroName = req.params.name;
+    const find = superHeros.find(element => element.name.toLocaleLowerCase() === heroName);
+
+    res.json({
+        message: `Vous avez demandé : ${heroName}`,
+        data: find,
+    });
+});
+
+app.route('/heroes/:name/powers')
+    .get((req, res) => {
+        const heroName = req.params.name;
+        const find = superHeros.find(element => element.name.toLocaleLowerCase() === heroName);
+
+        res.json({
+            message: `Vous avez demandé les pouvoirs de ${heroName}`,
+            data: find.power,
+        });
+    })
+    .patch((req, res) => {
+        const heroName = req.params.name;
+        const newPower = req.body.power;
+        const find = superHeros.find(element => element.name.toLocaleLowerCase() === heroName);
+
+        find.power.push(newPower);
+
+        res.json({
+            message: `Vous avez ajouté un nouveau pouvoir à ${heroName}`,
+            data: superHeros,
+        });
+    });
+
+// Starting server
 app.listen(PORT, () => {
     console.log(`Server started, listening on port ${PORT}`);
 });

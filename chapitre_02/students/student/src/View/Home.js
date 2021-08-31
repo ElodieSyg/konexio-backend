@@ -43,8 +43,7 @@ const Home = () => {
                 <input type='text'
                     onChange={keepValue} />
                 <button
-                    onClick={handleAddStudent}
-                >
+                    onClick={handleAddStudent}>
                     Send</button>
             </div>
         </div>
