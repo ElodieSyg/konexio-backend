@@ -32,7 +32,7 @@ app.get('/', (_req, res) => {
 app.route('/student')
     .get((_req, res) => {
         res.json({
-            message: `Student list :`,
+            message: `Student list`,
             data: students,
         });
     })
@@ -41,11 +41,12 @@ app.route('/student')
         students.push(newStudent);
 
         res.json({
-            message: `The new student was added to the list.`,
+            message: `The student was added to the list`,
             data: students,
         });
     });
 
+// Starting server
 app.listen(PORT, () => {
     console.log(`Server started, listening on port ${PORT}`);
 });

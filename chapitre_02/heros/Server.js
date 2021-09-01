@@ -104,6 +104,7 @@ app.route('/heroes/:name')
         const heroToDelete = superHeros.find(hero => hero.name === newHero.name);
         const index = heroesNames.indexOf(newHero.name);
 
+        // faire un .filter() pour delete le héro 
         console.log(heroesNames);
 
         console.log(index)
