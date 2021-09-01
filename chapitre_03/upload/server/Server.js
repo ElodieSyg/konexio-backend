@@ -1,17 +1,45 @@
 const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
-const upload = multer({ dest: 'public/img' });
+const fs = require('fs');
+const path = require('path');
+const { v4: uuidv4 } = require('uuid');
+const upload = multer({ dest: 'public/upload' });
 
 const PORT = 3000;
-const users = [{ username: 'Elodie', id: Math.floor(Math.random() * 10000), created: new Date() }];
+const users = [];
 
 const app = express();
+
+// Functions
+function renamePicture(req, res, next) {
+    const pathToFile = path.join(__dirname, "your-file.png")
+    const username = req.query.username;
+    const newPathToFile = path.join(__dirname, `${username}.png`)
+
+    const date = new Date();
+    console.log(date);
+
+    console.log(__dirname)
+
+
+    fs.rename(pathToFile, newPathToFile, function (err) {
+        if (err) {
+            return err
+        } else {
+            res.json({
+                status: 'OK',
+                message: 'Successfully renamed the file!',
+            })
+        };
+    });
+    next();
+};
 
 // Middlewares
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static((__dirname)));
 
 // Routing
 app.get('/', (_req, res) => (
@@ -29,17 +57,18 @@ app.route('/user')
             data: users,
         });
     })
-    .post(upload.single('image'), (req, res) => {
-        const newUser = req.body;
-        newUser.id = Math.floor(Math.random() * 10000);
+    .post(upload.single('image'), renamePicture, (req, res) => {
+        const newUser = { username: req.query.username };
+        newUser.id = uuidv4();
         newUser.created = new Date();
 
+        console.log(newUser)
         users.push(newUser);
 
         res.json({
             status: 'OK',
-            message: 'Image added',
-            data: newUser,
+            message: 'User and image added',
+            data: users,
         });
     });
 
