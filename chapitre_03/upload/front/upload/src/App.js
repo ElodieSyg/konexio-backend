@@ -32,6 +32,7 @@ const App = () => {
     console.log('handleSend');
     const formData = new FormData();
     formData.append('image', img);
+    console.log(img);
 
     fetch(`http://localhost:3000/user?username=${user}`, {
       method: 'POST',
