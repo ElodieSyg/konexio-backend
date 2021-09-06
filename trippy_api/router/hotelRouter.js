@@ -1,7 +1,5 @@
 const express = require('express');
 const router = express.Router();
-// Middlewares
-// matchHotel = require('../middleware/matchHotel');
 // Data
 const hotelData = require('../data/hotelData');
 
@@ -38,10 +36,10 @@ router.route('/:id')
             data: result,
         });
     })
-    .delete((req, res) => { // problème quand je supprime l'id 2
+    .delete((req, res) => {
         const id = parseInt(req.params.id);
         const index = hotelData.findIndex((obj) => obj.id === id);
-        hotelData.splice(index, index + 1);
+        hotelData.splice(index, 1);
 
         res.json({
             status: 'OK',
@@ -50,9 +48,18 @@ router.route('/:id')
         });
     })
     .put((req, res) => {
+        const id = parseInt(req.params.id);
+        const index = hotelData.findIndex((obj) => obj.id === id);
+        const newName = req.query.name;
+
+        if (index !== -1) {
+            hotelData[index].name = newName;
+        };
+
         res.json({
             status: 'OK',
-            action: 'met à jour le nom de l hotel avec un query params :id?name=newName'
+            message: 'Le nom de l hotel a été mis à jour',
+            data: hotelData[index],
         });
     });
 

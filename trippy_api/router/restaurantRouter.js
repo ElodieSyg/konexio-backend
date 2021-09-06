@@ -36,10 +36,10 @@ router.route('/:id')
             data: result,
         });
     })
-    .delete((req, res) => { // problème quand je supprime d'id 2
+    .delete((req, res) => {
         const id = parseInt(req.params.id);
         const index = restaurantData.findIndex(obj => obj.id === id);
-        restaurantData.splice(index, index + 1);
+        restaurantData.splice(index, 1);
 
         res.json({
             status: 'OK',
@@ -48,9 +48,18 @@ router.route('/:id')
         });
     })
     .put((req, res) => {
+        const id = parseInt(req.params.id);
+        const index = restaurantData.findIndex(obj => obj.id === id);
+        const newName = req.query.name;
+
+        if (index !== -1) {
+            hotelData[index].name = newName;
+        };
+
         res.json({
             status: 'OK',
-            action: 'met à jour le nom du restaurants avec un query params :id?name=newName'
+            message: 'Le nom de du restaurant a été mis à jour',
+            data: restaurantData[index],
         });
     });
 
