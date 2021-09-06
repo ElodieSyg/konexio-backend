@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 // Data
 const hotelData = require('../data/hotelData');
+// Middleware
+const matchHotel = require('../middleware/matchHotel');
 
 // Routers
 router.route('/')
@@ -12,11 +14,8 @@ router.route('/')
             data: hotelData
         });
     })
-    .post((req, res) => { // Faire un middleware pour qu'il n'y ai pas d'hotels similaires
+    .post(matchHotel, (req, res) => {
         const newHotel = req.body;
-        console.log(newHotel);
-
-        hotelData.push(newHotel);
 
         res.json({
             status: 'OK',
