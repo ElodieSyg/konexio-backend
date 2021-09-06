@@ -1,5 +1,5 @@
 const express = require('express');
-const router = express.Router;
+const router = express.Router();
 // Data
 const restaurantData = require('../data/restaurantData');
 
@@ -8,13 +8,20 @@ router.route('/')
     .get((req, res) => {
         res.json({
             status: 'OK',
-            action: 'retourne tous les restaurants'
+            message: 'Vous avez demandé tous les restaurants',
+            data: restaurantData
         });
     })
-    .post((req, res) => {
+    .post((req, res) => { // Faire un middleware pour qu'il n'y ai pas d'hotels similaires
+        const newRestaurant = req.body;
+        console.log(newRestaurant);
+
+        restaurantData.push(newRestaurant);
+
         res.json({
             status: 'OK',
-            action: 'ajoute un nouvel restaurants'
+            message: `Vous venez d'ajouter le restaurant : ${newRestaurant.name}, à la liste`,
+            data: restaurantData,
         });
     });
 

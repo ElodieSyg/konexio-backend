@@ -1,28 +1,45 @@
 const express = require('express');
-const router = express.Router;
+const router = express.Router();
+// Middlewares
+// matchHotel = require('../middleware/matchHotel');
 // Data
 const hotelData = require('../data/hotelData');
 
 // Routers
 router.route('/')
-    .get((req, res) => {
+    .get((_req, res) => {
         res.json({
             status: 'OK',
-            action: 'retourne tous les hotels'
+            message: 'Vous avez demandé tous les hotels',
+            data: hotelData
         });
     })
-    .post((req, res) => {
+    .post((req, res) => { // Faire un middleware pour qu'il n'y ai pas d'hotels similaires
+        const newHotel = req.body;
+        console.log(newHotel);
+
+        hotelData.push(newHotel);
+
         res.json({
             status: 'OK',
-            action: 'ajoute un nouvel hotel'
+            message: `Vous venez d'ajouter l'hotel : ${newHotel.name}, à la liste`,
+            data: hotelData,
         });
     });
 
 router.route('/:id')
     .get((req, res) => {
+        const id = req.params.id;
+        const result = hotelData.find((obj) => obj.id === id);
+
+        console.log(id)
+        console.log(result)
+        // result undefined ?
+
         res.json({
             status: 'OK',
-            action: 'retourne les hotels selon les identifiants'
+            message: `Vous avez demandé l hotel identifié numéro ${id}`,
+            data: result,
         });
     })
     .delete((req, res) => {
