@@ -27,16 +27,25 @@ router.route('/')
 
 router.route('/:id')
     .get((req, res) => {
+        const id = parseInt(req.params.id);
+        const result = restaurantData.find(obj => obj.id === id);
+
         res.json({
             status: 'OK',
-            action: 'retourne les restaurants selon les identifiants'
+            message: `Vous avez demandé le restaurant identifié numéro ${id}`,
+            data: result,
         });
     })
-    .delete((req, res) => {
+    .delete((req, res) => { // problème quand je supprime d'id 2
+        const id = parseInt(req.params.id);
+        const index = restaurantData.findIndex(obj => obj.id === id);
+        restaurantData.splice(index, index + 1);
+
         res.json({
             status: 'OK',
-            action: 'delete un restaurants'
-        })
+            message: `Vous venez de supprimer le restaurant : ${id.name}`,
+            data: restaurantData,
+        });
     })
     .put((req, res) => {
         res.json({

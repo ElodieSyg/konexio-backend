@@ -29,12 +29,8 @@ router.route('/')
 
 router.route('/:id')
     .get((req, res) => {
-        const id = req.params.id;
+        const id = parseInt(req.params.id);
         const result = hotelData.find((obj) => obj.id === id);
-
-        console.log(id)
-        console.log(result)
-        // result undefined ?
 
         res.json({
             status: 'OK',
@@ -42,11 +38,16 @@ router.route('/:id')
             data: result,
         });
     })
-    .delete((req, res) => {
+    .delete((req, res) => { // problème quand je supprime l'id 2
+        const id = parseInt(req.params.id);
+        const index = hotelData.findIndex((obj) => obj.id === id);
+        hotelData.splice(index, index + 1);
+
         res.json({
             status: 'OK',
-            action: 'delete un hotel'
-        })
+            message: `Vous venez de supprimer l hotel : ${id.name}`,
+            data: hotelData,
+        });
     })
     .put((req, res) => {
         res.json({
