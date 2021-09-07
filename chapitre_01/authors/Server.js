@@ -1,16 +1,16 @@
 const express = require('express');
+const app = express();
 const dotenv = require('dotenv');
 dotenv.config({
     path: './config.env',
 });
 const mongoose = require('mongoose');
-const app = express();
 // Middleware
 const debug = require('./middleware/debug');
 // Import router
 const authorsRouter = require('./routers/authorsRouter');
 
-// MongoDB connection 
+// MongoDB connection
 mongoose
     .connect(process.env.DB, {
         useNewUrlParser: true,
@@ -18,23 +18,6 @@ mongoose
     .then(() => {
         console.log('Connected to MongoDB !')
     });
-
-const AuthorsSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true,
-    },
-    nationality: {
-        type: String,
-        required: true,
-    },
-    books: {
-        type: Array,
-        required: true,
-    }
-});
-
-const Authors = mongoose.model('Authors', AuthorsSchema);
 
 // Middlewares
 app.use(express.json());
