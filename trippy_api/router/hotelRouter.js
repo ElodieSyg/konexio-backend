@@ -22,6 +22,20 @@ router.route('/')
             message: `Vous venez d'ajouter l'hotel : ${newHotel.name}, à la liste`,
             data: hotelData,
         });
+    })
+    .put((req, res) => {
+        const query1 = req.query.stars;
+        const query2 = req.query.city;
+        const local = hotelData.includes(query1, query2);
+
+        console.log(query1)
+        console.log(query2)
+        console.log(local)
+
+        res.json({
+            status: 'OK',
+            message: '',
+        });
     });
 
 router.route('/:id')

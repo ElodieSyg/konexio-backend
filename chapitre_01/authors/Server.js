@@ -1,48 +1,47 @@
 const express = require('express');
+const dotenv = require('dotenv');
+dotenv.config({
+    path: './config.env',
+});
+const mongoose = require('mongoose');
 const app = express();
-const PORT = 3000;
+// Middleware
+const debug = require('./middleware/debug');
+// Import router
+const authorsRouter = require('./routers/authorsRouter');
 
-var authors = [
-    {
-        name: "Lawrence Nowell",
-        nationality: "UK",
-        books: ["Beowulf"]
-    },
-    {
-        name: "William Shakespeare",
-        nationality: "UK",
-        books: ["Hamlet", "Othello", "Romeo and Juliet", "MacBeth"]
-    },
-    {
-        name: "Charles Dickens",
-        nationality: "US",
-        books: ["Oliver Twist", "A Christmas Carol"]
-    },
-    {
-        name: "Oscar Wilde",
-        nationality: "UK",
-        books: ["The Picture of Dorian Gray", "The Importance of Being Earnest"]
-    },
-];
-
-app.get('/', ((req, res) => {
-    res.json({
-       message: 'Authors API'
+// MongoDB connection 
+mongoose
+    .connect(process.env.DB, {
+        useNewUrlParser: true,
+    })
+    .then(() => {
+        console.log('Connected to MongoDB !')
     });
-}));
 
-app.get('/authors/:id', (req, res) => {
-    let id = req.params.id - 1;
-    console.log(id);
-
-    res.send(`Name : "${authors[id].name}", nationality : "${authors[id].nationality}"`);
+const AuthorsSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true,
+    },
+    nationality: {
+        type: String,
+        required: true,
+    },
+    books: {
+        type: Array,
+        required: true,
+    }
 });
 
-app.get('/authors/:id/books', (req, res) => {
-    let id = req.params.id - 1;
-    res.send(`books : "${authors[id].books}"`);
-});
+const Authors = mongoose.model('Authors', AuthorsSchema);
 
-app.listen(PORT, () => {
-    console.log(`Server started, listening on port ${PORT}.`);
+// Middlewares
+app.use(express.json());
+app.use(debug);
+app.use('/authors', authorsRouter);
+
+// Starting server
+app.listen(process.env.PORT, () => {
+    console.log(`Server started, listening on port ${process.env.PORT}.`);
 });

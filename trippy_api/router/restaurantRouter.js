@@ -7,7 +7,7 @@ const matchRestaurant = require('../middleware/matchRestaurant');
 
 // Routers
 router.route('/')
-    .get((req, res) => {
+    .get((_req, res) => {
         res.json({
             status: 'OK',
             message: 'Vous avez demandé tous les restaurants',
