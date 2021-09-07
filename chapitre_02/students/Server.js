@@ -1,26 +1,28 @@
 const express = require('express');
-const cors = require('cors');
 const app = express();
-const PORT = 3000;
+const dotenv = require('dotenv');
+dotenv.config({
+    path: './config.env',
+});
+const mongoose = require('mongoose');
+// Middleware
+const debug = require('./middleware/debug');
+// Import router
+const studentsRouter = require('./router/studentsRouter');
 
-let students = ["Elodie"];
+// MongoDB connection
+mongoose
+    .connect(process.env.DB, {
+        useNewUrlParser: true,
+    })
+    .then(() => {
+        console.log('Connected to MongoDB !');
+    });
 
+// Middlewares
 app.use(express.json());
-app.use(cors({ credentials: true, origin: true }));
-
-// Functions
-function checkName(req, res, next) {
-    const newStudent = req.body;
-    const check = students.find(student => student === newStudent.name);
-
-    if (newStudent.name !== check) {
-        next();
-    } else {
-        res.json({
-            message: 'The student is already on the list',
-        });
-    };
-};
+app.use(debug);
+app.use('/student', studentsRouter);
 
 // Routing
 app.get('/', (_req, res) => {
@@ -29,24 +31,7 @@ app.get('/', (_req, res) => {
     });
 });
 
-app.route('/student')
-    .get((_req, res) => {
-        res.json({
-            message: `Student list`,
-            data: students,
-        });
-    })
-    .post(checkName, (req, res) => {
-        const newStudent = req.body.name;
-        students.push(newStudent);
-
-        res.json({
-            message: `The student was added to the list`,
-            data: students,
-        });
-    });
-
 // Starting server
-app.listen(PORT, () => {
-    console.log(`Server started, listening on port ${PORT}`);
+app.listen(process.env.PORT, () => {
+    console.log(`Server started, listening on port ${process.env.PORT}`);
 });
