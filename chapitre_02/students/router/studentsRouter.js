@@ -6,7 +6,7 @@ const Student = require('../model/student.model');
 const checkName = require('../middleware/checkName');
 
 router.route('/')
-    .get(async (req, res) => {
+    .get(async (_req, res) => {
         const students = await Student.find();
         console.log(students)
 
@@ -23,6 +23,20 @@ router.route('/')
             status: 'OK',
             message: 'You added a new student',
             data: newStudent,
+        });
+    })
+
+router.route('/all')
+    .delete(async (_req, res) => {
+        const deleteStudent = await Student.find({ name: 'Elodie Sayavong' });
+        await Student.deleteMany({ name: 'Elodie Sayavong' })
+
+        console.log(deleteStudent);
+
+        res.json({
+            status: 'OK',
+            message: 'You deleted this student',
+            data: Student,
         });
     });
 
