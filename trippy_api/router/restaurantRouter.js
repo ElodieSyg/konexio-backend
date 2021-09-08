@@ -1,4 +1,4 @@
-const express = require('express');
+/* const express = require('express');
 const router = express.Router();
 // Data
 const restaurantData = require('../data/restaurantData');
@@ -62,4 +62,4 @@ router.route('/:id')
         });
     });
 
-module.exports = router;
+module.exports = router; */

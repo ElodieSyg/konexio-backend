@@ -1,6 +1,20 @@
 const express = require('express');
 const app = express();
-const PORT = 4000;
+const dotenv = require(`dotenv`);
+dotenv.config({
+    path: `./config.env`,
+});
+const mongoose = require('mongoose');
+
+// MongoDB connection 
+mongoose
+    .connect(process.env.DATABASE_URL, {
+        useNewUrlParser: true,
+    })
+    .then(() => {
+        console.log(`Connected to MongoDB`);
+    });
+
 // Middlewares
 const debug = require('./middleware/debug');
 // Routers
@@ -13,6 +27,6 @@ app.use(express.json());
 app.use('/hotels', hotelRouter);
 app.use('/restaurants', restaurantRouter);
 
-app.listen(PORT, () => {
-    console.log(`Server started, listening on port ${PORT}`);
+app.listen(process.env.PORT, () => {
+    console.log(`Server started, listening on port ${process.env.PORT}`);
 });

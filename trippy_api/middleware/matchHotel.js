@@ -1,4 +1,4 @@
-const hotelData = require('../data/hotelData');
+/* const hotelData = require('../data/hotelData');
 
 function matchHotel(req, res, next) {
     const newHotel = req.body;
@@ -17,4 +17,4 @@ function matchHotel(req, res, next) {
     };
 };
 
-module.exports = matchHotel;
+module.exports = matchHotel; */

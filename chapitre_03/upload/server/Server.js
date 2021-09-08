@@ -1,78 +1,32 @@
-const express = require('express');
-const cors = require('cors');
-const multer = require('multer');
-const fs = require('fs');
-const path = require('path');
-const { v4: uuidv4 } = require('uuid');
-const upload = multer({ dest: 'public/upload' });
-
-const PORT = 3000;
-const users = [];
-
+const express = require(`express`);
 const app = express();
+const dotenv = require(`dotenv`);
+dotenv.config({
+    path: `./config.env`,
+});
+const mongoose = require(`mongoose`);
+// Import middlewares
+const debug = require(`./middleware/debug`);
+// Import router
+const router = require(`./router/router`);
+const userRouter = require(`./router/userRouter`);
 
-// Functions
-function renamePicture(req, res, next) {
-    const pathToFile = path.join(__dirname, req.path)
-    const newPathToFile = path.join(__dirname, `username-date-heure.png`)
-
-    /*     const date = new Date();
-        console.log(date);
-     */
-
-    console.log('req_path', req.path)
-
-
-    fs.rename(pathToFile, newPathToFile, function (err) {
-        if (err) {
-            return err
-        } else {
-            res.json({
-                status: 'OK',
-                message: 'Successfully renamed the file!',
-            })
-        };
+// MongoDB connection
+mongoose
+    .connect(process.env.DATABASE_URL, {
+        useNewUrlParser: true,
+    })
+    .then(() => {
+        console.log(`Connected to MongoDB`)
     });
-    next();
-};
 
 // Middlewares
-app.use(cors());
 app.use(express.json());
-app.use(express.static((__dirname)));
-
-// Routing
-app.get('/', (_req, res) => (
-    res.json({
-        status: 'OK',
-        message: 'Upload Chapter_03',
-    })
-));
-
-app.route('/user')
-    .get((_req, res) => {
-        res.json({
-            status: 'OK',
-            message: 'Users list',
-            data: users,
-        });
-    })
-    .post(upload.single('image'), renamePicture, (req, res) => {
-        const newUser = { username: req.query.username };
-        newUser.id = uuidv4();
-        newUser.created = new Date();
-
-        console.log(newUser)
-        users.push(newUser);
-
-        res.json({
-            status: 'OK',
-            message: 'User and image added',
-            data: users,
-        });
-    });
+app.use(debug);
+app.use('/', router);
+app.use('/user', userRouter);
 
 // Starting server
-app.listen(PORT, () => {
-    console.log(`Server started, listening on port ${PORT}`);
+app.listen(process.env.PORT, () => {
+    console.log(`Server started, listening on port ${process.env.PORT}`);
 });

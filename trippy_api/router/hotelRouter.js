@@ -1,32 +1,34 @@
 const express = require('express');
 const router = express.Router();
-// Data
-const hotelData = require('../data/hotelData');
 // Middleware
 const matchHotel = require('../middleware/matchHotel');
+// Import model
+const Hotel = require('../model/hotel.model');
 
 // Routers
 router.route('/')
-    .get((_req, res) => {
+    .get(async (_req, res) => {
+        const hotels = await Hotel.find()
+
         res.json({
             status: 'OK',
             message: 'Vous avez demandé tous les hotels',
-            data: hotelData
+            data: hotels,
         });
     })
-    .post(matchHotel, (req, res) => {
-        const newHotel = req.body;
+/*     .post(async (req, res) => {
+        const newHotel = await Hotel.create(req.body)
 
         res.json({
             status: 'OK',
             message: `Vous venez d'ajouter l'hotel : ${newHotel.name}, à la liste`,
-            data: hotelData,
+            data: newHotel,
         });
     })
     .put((req, res) => {
         const query1 = req.query.stars;
         const query2 = req.query.city;
-        const local = hotelData.includes(query1, query2);
+        const local = Hotel.includes(query1, query2);
 
         console.log(query1)
         console.log(query2)
@@ -37,8 +39,8 @@ router.route('/')
             message: '',
         });
     });
-
-router.route('/:id')
+ */
+/* router.route('/:id')
     .get((req, res) => {
         const id = parseInt(req.params.id);
         const result = hotelData.find((obj) => obj.id === id);
@@ -75,5 +77,5 @@ router.route('/:id')
             data: hotelData[index],
         });
     });
-
+ */
 module.exports = router;
