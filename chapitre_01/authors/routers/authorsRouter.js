@@ -19,7 +19,7 @@ router.route('/')
 
         res.json({
             status: 'OK',
-            messahe: 'You added a new author',
+            message: 'You added a new author',
             data: newAuthor,
         });
     });
