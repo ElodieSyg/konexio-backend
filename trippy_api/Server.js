@@ -5,6 +5,11 @@ dotenv.config({
     path: `./config.env`,
 });
 const mongoose = require('mongoose');
+// Middlewares
+const debug = require('./middleware/debug');
+// Import routers
+const hotelRouter = require('./router/hotelRouter');
+const restaurantRouter = require('./router/restaurantRouter');
 
 // MongoDB connection 
 mongoose
@@ -14,12 +19,6 @@ mongoose
     .then(() => {
         console.log(`Connected to MongoDB`);
     });
-
-// Middlewares
-const debug = require('./middleware/debug');
-// Routers
-const hotelRouter = require('./router/hotelRouter');
-const restaurantRouter = require('./router/restaurantRouter');
 
 // Middlewares
 app.use(debug);

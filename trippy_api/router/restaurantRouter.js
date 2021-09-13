@@ -1,65 +1,60 @@
-/* const express = require('express');
+const express = require("express");
 const router = express.Router();
-// Data
-const restaurantData = require('../data/restaurantData');
 // Middleware
-const matchRestaurant = require('../middleware/matchRestaurant');
+const matchRestaurant = require("../middleware/matchRestaurant");
+// Import model
+const Restaurant = require("../model/restaurantModel");
 
-// Routers
-router.route('/')
-    .get((_req, res) => {
+router.route("/")
+    .get(async (_req, res) => {
+        const restaurants = await Restaurant.find();
+
         res.json({
-            status: 'OK',
-            message: 'Vous avez demandé tous les restaurants',
-            data: restaurantData
+            status: "OK",
+            message: "Vous avez demandé tous les hotels",
+            data: restaurants,
         });
     })
-    .post(matchRestaurant, (req, res) => {
-        const newRestaurant = req.body;
+    .post(matchRestaurant, async (req, res) => {
+        const newRestaurant = await Restaurant.create(req.body);
 
         res.json({
-            status: 'OK',
-            message: `Vous venez d'ajouter le restaurant : ${newRestaurant.name}, à la liste`,
-            data: restaurantData,
+            status: "OK",
+            message: `Vous venez d'ajouter ${newRestaurant.name} à la liste`,
+            data: newRestaurant,
         });
     });
 
-router.route('/:id')
-    .get((req, res) => {
-        const id = parseInt(req.params.id);
-        const result = restaurantData.find(obj => obj.id === id);
+router.route("/:id")
+    .get(async (req, res) => {
+        const id = req.params.id;
+        const restaurant = await Restaurant.findById(id);
 
         res.json({
-            status: 'OK',
-            message: `Vous avez demandé le restaurant identifié numéro ${id}`,
-            data: result,
+            status: "OK",
+            message: `Vous avez demandé l'hotel identifié numéro ${id}`,
+            data: restaurant,
         });
     })
-    .delete((req, res) => {
-        const id = parseInt(req.params.id);
-        const index = restaurantData.findIndex(obj => obj.id === id);
-        restaurantData.splice(index, 1);
+    .delete(async (req, res) => {
+        const id = req.params.id;
+        const deleteRestaurant = await Restaurant.deleteOne({ _id: id });
 
         res.json({
-            status: 'OK',
-            message: `Vous venez de supprimer le restaurant : ${id.name}`,
-            data: restaurantData,
-        });
+            status: "OK",
+            message: `Vous venez de supprimer l'hotel identifié numéro ${id}`,
+        })
     })
-    .put((req, res) => {
-        const id = parseInt(req.params.id);
-        const index = restaurantData.findIndex(obj => obj.id === id);
+    .put(async (req, res) => { // update fonctionne pas
+        const id = req.params.id;
         const newName = req.query.name;
-
-        if (index !== -1) {
-            hotelData[index].name = newName;
-        };
+        const match = await Restaurant.findByIdAndUpdate({ _id: id });
 
         res.json({
-            status: 'OK',
-            message: 'Le nom de du restaurant a été mis à jour',
-            data: restaurantData[index],
+            status: "OK",
+            message: "Le nom de l'hotel a été mis à jour",
+            data: match,
         });
     });
 
-module.exports = router; */
+module.exports = router;

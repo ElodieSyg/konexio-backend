@@ -1,20 +1,18 @@
-/* const hotelData = require('../data/hotelData');
+// Import model
+const Hotel = require('../model/hotelModel');
 
-function matchHotel(req, res, next) {
-    const newHotel = req.body;
-    const nameArray = hotelData.map(obj => obj.name)
-    const include = nameArray.includes(newHotel.name)
+async function matchHotel(req, res, next) {
+    const name = req.body.name;
+    const hotel = await Hotel.findOne({ name: new RegExp(name, 'i') });
 
-    if (!include) {
-        hotelData.push(newHotel);
-        next();
-    } else {
+    if (hotel) {
         res.json({
-            status: 'FAIL',
-            message: `${newHotel.name} existe déjà`,
+            status: 'OK',
+            message: `${name} already exist`,
         });
+    } else {
         next();
     };
 };
 
-module.exports = matchHotel; */
+module.exports = matchHotel;

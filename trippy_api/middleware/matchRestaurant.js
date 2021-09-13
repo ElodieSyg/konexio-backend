@@ -1,18 +1,16 @@
-const restaurantData = require('../data/restaurantData');
+// Import model
+const Restaurant = require('../model/restaurantModel');
 
-function matchRestaurant(req, res, next) {
-    const newRestaurant = req.body;
-    const nameArray = restaurantData.map(obj => obj.name)
-    const include = nameArray.includes(newRestaurant.name)
+async function matchRestaurant(req, res, next) {
+    const name = req.body.name;
+    const hotel = await Restaurant.findOne({ name: new RegExp(name, 'i') });
 
-    if (!include) {
-        restaurantData.push(newRestaurant);
-        next();
-    } else {
+    if (hotel) {
         res.json({
-            status: 'FAIL',
-            message: `${newRestaurant.name} existe déjà`,
+            status: 'OK',
+            message: `${name} already exist`,
         });
+    } else {
         next();
     };
 };
