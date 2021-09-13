@@ -1,7 +1,0 @@
-{
-    "events": {
-        "crash": "lsof -i 4000 -t | xargs kill",
-        "restart": "lsof -i 4000 -t | xargs kill"
-    },
-    "delay": 15000
-}
