@@ -57,4 +57,21 @@ router.route("/:id")
         });
     });
 
+router.route("/stats")
+    .get(async (req, res) => {
+        try {
+            const filter = await Hotel.aggregate([
+                {
+                    $match: { stars: { $equal: 5 } }
+                }
+            ]);
+        } catch (err) {
+            res.status(404).json({
+                message: err,
+            })
+        }
+    });
+
+
+
 module.exports = router;
