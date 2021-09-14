@@ -1,0 +1,41 @@
+.login-container {
+    margin: 2rem 10rem 2rem 10rem;
+}
+
+.log-flexbox {
+    display: flex;
+    flex-direction: column;
+}
+
+.log-title {
+    text-align: center;
+    color: #154360;
+}
+
+.log-subtitle {
+    text-align: center;
+    color: #154360;
+}
+
+.blue-text {
+    text-decoration: none;
+    color: #154360;
+}
+
+.margin-top {
+    margin-bottom: 0.5rem;
+}
+
+.btn-style {
+    width: 10rem;
+    height: 2rem;
+    background-color: #154360;
+    color: white;
+    border-radius: 0.5rem;
+    border: none;
+}
+
+.white-text {
+    text-decoration: none;
+    color: white;
+}
