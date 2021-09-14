@@ -11,6 +11,7 @@ const debug = require("./middlewares/debug");
 // Import Routers
 const signRouter = require("./routers/signRouter");
 const loginRouter = require("./routers/loginRouter");
+const adminRouter = require("./routers/adminRouter");
 
 // MongoDB connection
 mongoose
@@ -27,6 +28,7 @@ app.use(cookieParser());
 app.use(debug);
 app.use("/sign", signRouter);
 app.use("/login", loginRouter);
+app.use("/admin", adminRouter);
 
 // Starting server
 app.listen(process.env.PORT, () => {
