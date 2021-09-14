@@ -5,6 +5,7 @@ dotenv.config({
     path: `./config.env`,
 });
 const mongoose = require('mongoose');
+const PORT = 7000;
 // Middlewares
 const debug = require('./middleware/debug');
 // Import routers
@@ -26,6 +27,6 @@ app.use(express.json());
 app.use('/hotels', hotelRouter);
 app.use('/restaurants', restaurantRouter);
 
-app.listen(process.env.PORT, () => {
-    console.log(`Server started, listening on port ${process.env.PORT}`);
+app.listen(PORT, () => {
+    console.log(`Server started, listening on port ${PORT}`);
 });

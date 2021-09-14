@@ -58,20 +58,26 @@ router.route("/:id")
     });
 
 router.route("/stats")
-    .get(async (req, res) => {
+    .get(async (_req, res) => {
         try {
             const filter = await Hotel.aggregate([
                 {
-                    $match: { stars: { $equal: 5 } }
-                }
+                    $match: { category: { $gte: 3 } },
+                },
+                {
+                    $group: { _id: null, min: { $min: "$price" }, max: { $max: "$price" } }
+                },
             ]);
+
+            res.json({
+                status: "OK",
+                data: filter,
+            });
         } catch (err) {
             res.status(404).json({
                 message: err,
             })
-        }
+        };
     });
-
-
 
 module.exports = router;
