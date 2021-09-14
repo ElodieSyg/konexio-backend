@@ -4,14 +4,13 @@ dotenv.config({
     path: "./config.env",
 });
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
-const jsonwebtoken = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const app = express();
 // Import middlewares
 const debug = require("./middlewares/debug");
 // Import Routers
 const signRouter = require("./routers/signRouter");
+const loginRouter = require("./routers/loginRouter");
 
 // MongoDB connection
 mongoose
@@ -27,6 +26,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(debug);
 app.use("/sign", signRouter);
+app.use("/login", loginRouter);
 
 // Starting server
 app.listen(process.env.PORT, () => {
